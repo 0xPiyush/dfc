@@ -1,4 +1,4 @@
-import 'package:dfc/pages/router.dart';
+import 'package:dfc/pages/app_routes.dart';
 import 'package:flutter/material.dart';
 
 class GetStartedPage extends StatelessWidget {
@@ -39,7 +39,7 @@ class GetStartedPage extends StatelessWidget {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
-                  appRouter.go(AppRoutes.signUp.route);
+                  Navigator.pushNamed(context, AppRoutes.signUp.route);
                 },
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 42),
