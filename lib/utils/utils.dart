@@ -13,8 +13,8 @@ void showSnackBar(BuildContext context, String message) {
 }
 
 Future<File?> pickImage() async {
-  final ImagePicker _picker = ImagePicker();
-  final XFile? image = await _picker.pickImage(
+  final ImagePicker picker = ImagePicker();
+  final XFile? image = await picker.pickImage(
       source: ImageSource.camera, preferredCameraDevice: CameraDevice.front);
 
   if (image != null) {

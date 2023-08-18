@@ -1,7 +1,9 @@
 enum AppRoutes {
   home("/home"),
   getStarted("/get-started"),
-  signUp("/sign-up"),
+  profile("/profile"),
+  newLoan("/new-loan"),
+  enterPhone("/enter-phone"),
   onboarding("/onboarding"),
   otpVerify("/otp-verify");
 

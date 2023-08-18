@@ -1,8 +1,10 @@
 import 'package:dfc/pages/app_routes.dart';
 import 'package:dfc/pages/get_started/get_started.dart';
 import 'package:dfc/pages/home/home.dart';
+import 'package:dfc/pages/new_loan/new_loan.dart';
 import 'package:dfc/pages/onboarding/onboarding.dart';
-import 'package:dfc/pages/sign_up/sign_up.dart';
+import 'package:dfc/pages/profile/profile.dart';
+import 'package:dfc/pages/enter_phone/enter_phone.dart';
 import 'package:dfc/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +24,83 @@ void main() async {
 
 class DFC extends StatelessWidget {
   const DFC({super.key});
+
+  static var appTheme = ThemeData(
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: Colors.red.shade400,
+      primary: Colors.red.shade400,
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        textStyle: GoogleFonts.inter(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          height: 1.2,
+          color: Colors.white,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    ),
+    textTheme: TextTheme(
+      headlineLarge: GoogleFonts.dmSerifText(
+        fontSize: 48,
+        fontWeight: FontWeight.w500,
+        height: 1.2,
+        color: Colors.black,
+      ),
+      headlineMedium: GoogleFonts.dmSerifText(
+        fontSize: 32,
+        fontWeight: FontWeight.w500,
+        height: 1.2,
+        color: Colors.black,
+      ),
+      headlineSmall: GoogleFonts.dmSerifText(
+        fontSize: 24,
+        fontWeight: FontWeight.w400,
+        height: 1.2,
+        color: Colors.black,
+      ),
+      bodyLarge: GoogleFonts.barlow(
+        fontSize: 24,
+        fontWeight: FontWeight.w400,
+        height: 1.2,
+        color: Colors.black,
+      ),
+      bodyMedium: GoogleFonts.barlow(
+        fontSize: 18,
+        fontWeight: FontWeight.w400,
+        height: 1.2,
+        color: Colors.black,
+      ),
+      bodySmall: GoogleFonts.barlow(
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+        height: 1.2,
+        color: Colors.grey[700],
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      contentPadding: const EdgeInsets.symmetric(
+        vertical: 8,
+        horizontal: 16,
+      ),
+    ),
+  );
+
+  static var routes = {
+    AppRoutes.getStarted.route: (context) => const GetStartedPage(),
+    AppRoutes.home.route: (context) => const HomePage(),
+    AppRoutes.newLoan.route: (context) => const NewLoanPage(),
+    AppRoutes.profile.route: (context) => const ProfilePage(),
+    AppRoutes.enterPhone.route: (context) => const EnterPhonePage(),
+    AppRoutes.onboarding.route: (context) => const OnboardingPage(),
+  };
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
@@ -72,160 +151,18 @@ class DFC extends StatelessWidget {
               }
               return MaterialApp(
                 title: 'DFC',
-                theme: ThemeData(
-                  colorScheme: ColorScheme.fromSeed(
-                    seedColor: Colors.red.shade400,
-                    primary: Colors.red.shade400,
-                  ),
-                  elevatedButtonTheme: ElevatedButtonThemeData(
-                    style: ElevatedButton.styleFrom(
-                      textStyle: GoogleFonts.inter(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        height: 1.2,
-                        color: Colors.white,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                  textTheme: TextTheme(
-                    headlineLarge: GoogleFonts.dmSerifText(
-                      fontSize: 48,
-                      fontWeight: FontWeight.w600,
-                      height: 1.2,
-                      color: Colors.black,
-                    ),
-                    headlineMedium: GoogleFonts.dmSerifText(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w500,
-                      height: 1.2,
-                      color: Colors.black,
-                    ),
-                    headlineSmall: GoogleFonts.dmSerifText(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w400,
-                      height: 1.2,
-                      color: Colors.black,
-                    ),
-                    bodyLarge: GoogleFonts.barlow(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w400,
-                      height: 1.2,
-                      color: Colors.black,
-                    ),
-                    bodyMedium: GoogleFonts.barlow(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w400,
-                      height: 1.2,
-                      color: Colors.black,
-                    ),
-                    bodySmall: GoogleFonts.barlow(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      height: 1.2,
-                      color: Colors.grey[700],
-                    ),
-                  ),
-                  inputDecorationTheme: InputDecorationTheme(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 16,
-                    ),
-                  ),
-                ),
+                theme: appTheme,
                 home: startPage,
-                routes: {
-                  AppRoutes.getStarted.route: (context) =>
-                      const GetStartedPage(),
-                  AppRoutes.home.route: (context) => const HomePage(),
-                  AppRoutes.signUp.route: (context) => const SignUpPage(),
-                  AppRoutes.onboarding.route: (context) =>
-                      const OnboardingPage(),
-                },
+                routes: routes,
               );
             },
           );
         } else {
           return MaterialApp(
             title: 'DFC',
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: Colors.red.shade400,
-                primary: Colors.red.shade400,
-              ),
-              elevatedButtonTheme: ElevatedButtonThemeData(
-                style: ElevatedButton.styleFrom(
-                  textStyle: GoogleFonts.inter(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    height: 1.2,
-                    color: Colors.white,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-              textTheme: TextTheme(
-                headlineLarge: GoogleFonts.dmSerifText(
-                  fontSize: 48,
-                  fontWeight: FontWeight.w600,
-                  height: 1.2,
-                  color: Colors.black,
-                ),
-                headlineMedium: GoogleFonts.dmSerifText(
-                  fontSize: 32,
-                  fontWeight: FontWeight.w500,
-                  height: 1.2,
-                  color: Colors.black,
-                ),
-                headlineSmall: GoogleFonts.dmSerifText(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w400,
-                  height: 1.2,
-                  color: Colors.black,
-                ),
-                bodyLarge: GoogleFonts.barlow(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w400,
-                  height: 1.2,
-                  color: Colors.black,
-                ),
-                bodyMedium: GoogleFonts.barlow(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w400,
-                  height: 1.2,
-                  color: Colors.black,
-                ),
-                bodySmall: GoogleFonts.barlow(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  height: 1.2,
-                  color: Colors.grey[700],
-                ),
-              ),
-              inputDecorationTheme: InputDecorationTheme(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 16,
-                ),
-              ),
-            ),
+            theme: appTheme,
             home: const GetStartedPage(),
-            routes: {
-              AppRoutes.getStarted.route: (context) => const GetStartedPage(),
-              AppRoutes.home.route: (context) => const HomePage(),
-              AppRoutes.signUp.route: (context) => const SignUpPage(),
-              AppRoutes.onboarding.route: (context) => const OnboardingPage(),
-            },
+            routes: routes,
           );
         }
       },

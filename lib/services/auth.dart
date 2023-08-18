@@ -2,10 +2,11 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dfc/models/user_model.dart';
-import 'package:dfc/pages/otp_verify/otp_verify.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+
+UserModel? userData;
 
 sendOtp(String phone, Function afterSent) async {
   try {
@@ -47,12 +48,21 @@ Future<void> signOut() async {
 }
 
 Future<bool> checkUserOnboardingFinished(User user) async {
-  DocumentSnapshot snapshot =
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
-  if (snapshot.exists) {
+  await fetchUserData();
+  if (userData != null) {
     return true;
   } else {
     return false;
+  }
+}
+
+Future<void> fetchUserData() async {
+  DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(FirebaseAuth.instance.currentUser!.uid)
+      .get();
+  if (snapshot.exists) {
+    userData = UserModel.fromMap(snapshot.data() as Map<String, dynamic>);
   }
 }
 
@@ -77,6 +87,9 @@ Future<void> saveUserDataToFirebase(
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .set(user.toMap());
+
+    // Update local user data
+    await fetchUserData();
   } catch (e) {
     throw Exception(e.toString());
   }

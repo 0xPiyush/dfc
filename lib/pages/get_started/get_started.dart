@@ -39,7 +39,7 @@ class GetStartedPage extends StatelessWidget {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.signUp.route);
+                  Navigator.pushNamed(context, AppRoutes.enterPhone.route);
                 },
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 42),

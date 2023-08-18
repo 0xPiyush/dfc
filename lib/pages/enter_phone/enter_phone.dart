@@ -5,14 +5,14 @@ import 'package:dfc/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+class EnterPhonePage extends StatefulWidget {
+  const EnterPhonePage({super.key});
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  State<EnterPhonePage> createState() => _EnterPhonePageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _EnterPhonePageState extends State<EnterPhonePage> {
   var formKey = GlobalKey<FormState>();
 
   final phoneController = TextEditingController();
@@ -48,7 +48,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                         const SizedBox(height: 32),
                         Text(
-                          "Sign up",
+                          "Phone Number",
                           style: Theme.of(context).textTheme.headlineMedium,
                         ),
                         const SizedBox(height: 8),
