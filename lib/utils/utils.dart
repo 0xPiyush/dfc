@@ -23,3 +23,11 @@ Future<File?> pickImage() async {
     return null;
   }
 }
+
+BigInt rupeeToPaise(String rupee) {
+  return BigInt.from(double.parse(rupee) * 100);
+}
+
+BigInt paiseToRupee(String paise) {
+  return BigInt.from(double.parse(paise) / 100);
+}

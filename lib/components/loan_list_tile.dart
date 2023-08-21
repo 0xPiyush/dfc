@@ -1,10 +1,12 @@
 import 'package:dfc/models/loan_model.dart';
+import 'package:dfc/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 class LoanListTile extends StatelessWidget {
   final LoanModel loanData;
+  final void Function()? onTap;
 
-  const LoanListTile({super.key, required this.loanData});
+  const LoanListTile({super.key, required this.loanData, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,7 @@ class LoanListTile extends StatelessWidget {
               Icon(Icons.monetization_on),
             ],
           ),
-          title: Text(loanData.loanedTo),
+          title: Text(loanData.loanedToName),
           subtitle: Text(
             loanData.loanedOn.toLocal().toString().split(' ')[0],
             style: Theme.of(context).textTheme.bodySmall,
@@ -34,7 +36,7 @@ class LoanListTile extends StatelessWidget {
                   fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize),
               children: [
                 TextSpan(
-                  text: (loanData.amount / BigInt.parse("100")).toString(),
+                  text: paiseToRupee(loanData.amount).toString(),
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 TextSpan(
@@ -52,62 +54,7 @@ class LoanListTile extends StatelessWidget {
               width: 1,
             ),
           ),
-          onTap: () {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(loanData.loanedTo),
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.call),
-                        )
-                      ],
-                    ),
-                    content: Text(
-                      "Amount: ₹${(loanData.amount / BigInt.parse("100")).toString()}\n"
-                      "Interest Rate: ${loanData.interestRate}%\n"
-                      "Interest Type: ${loanData.loanType == LoanType.simple ? "Simple" : "Compounding"}\n"
-                      "Loaned On: ${loanData.loanedOn.toLocal().toString().split(' ')[0]}\n"
-                      "Loaned Until: ${loanData.loanedUntil.toLocal().toString().split(' ')[0]}\n"
-                      "Status: ${loanData.isPaid ? "Paid" : "Not Paid"}",
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    actionsAlignment: MainAxisAlignment.spaceEvenly,
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text("Edit"),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text("Mark Paid"),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text("Delete"),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text("Cancel"),
-                      ),
-                    ],
-                  );
-                });
-          },
+          onTap: onTap,
         ),
       ),
     );
