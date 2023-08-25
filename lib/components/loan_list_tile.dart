@@ -10,6 +10,13 @@ class LoanListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var totalInterest = paiseToRupee(calculateInterest(
+            BigInt.parse(loanData.amount),
+            loanData.interestRate,
+            daysBetween(loanData.loanedOn, loanData.loanedUntil),
+            interestType: loanData.interestType)
+        .toString());
+    var totalAmount = paiseToRupee(loanData.amount) + totalInterest;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       child: Material(
@@ -28,24 +35,36 @@ class LoanListTile extends StatelessWidget {
             loanData.loanedOn.toLocal().toString().split(' ')[0],
             style: Theme.of(context).textTheme.bodySmall,
           ),
-          trailing: RichText(
-            text: TextSpan(
-              text: "₹",
-              style: TextStyle(
-                  color: Colors.green,
-                  fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize),
-              children: [
-                TextSpan(
-                  text: paiseToRupee(loanData.amount).toString(),
-                  style: Theme.of(context).textTheme.bodyLarge,
+          trailing: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              RichText(
+                text: TextSpan(
+                  text: "₹",
+                  style: TextStyle(
+                      color: Colors.green,
+                      fontSize:
+                          Theme.of(context).textTheme.bodyLarge!.fontSize),
+                  children: [
+                    TextSpan(
+                      text: paiseToRupee(loanData.amount).toString(),
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                    TextSpan(
+                      text:
+                          " @${loanData.interestRate}% ${loanData.interestType == InterestType.compound ? 'CI' : 'SI'}",
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
                 ),
-                TextSpan(
-                  text: " @${loanData.interestRate}%",
-                  style: Theme.of(context).textTheme.bodySmall,
-                )
-              ],
-            ),
-            overflow: TextOverflow.ellipsis,
+                overflow: TextOverflow.ellipsis,
+              ),
+              Text(
+                "Remaining: ₹${(totalAmount - paiseToRupee(loanData.amountPaid)).toStringAsFixed(2)}",
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+            ],
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),

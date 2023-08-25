@@ -73,6 +73,19 @@ class _GivenLoansPageState extends State<GivenLoansPage> {
                           return LoanListTile(
                             loanData: loans[index],
                             onTap: () {
+                              var totalInterest = paiseToRupee(
+                                  calculateInterest(
+                                          BigInt.parse(loans[index].amount),
+                                          loans[index].interestRate,
+                                          daysBetween(loans[index].loanedOn,
+                                              loans[index].loanedUntil),
+                                          interestType:
+                                              loans[index].interestType)
+                                      .toString());
+                              var totalAmount =
+                                  paiseToRupee(loans[index].amount) +
+                                      totalInterest;
+
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -93,11 +106,14 @@ class _GivenLoansPageState extends State<GivenLoansPage> {
                                     ),
                                     content: Text(
                                       "Amount: ₹${paiseToRupee(loans[index].amount).toString()}\n"
+                                      "Total Amount: ₹$totalAmount\n"
                                       "Interest Rate: ${loans[index].interestRate}%\n"
                                       "Interest Type: ${loans[index].interestType == InterestType.simple ? "Simple" : "Compounding"}\n"
+                                      "Total Interest: ₹$totalInterest\n"
+                                      "Amount Paid: ₹${paiseToRupee(loans[index].amountPaid)}\n"
+                                      "Remaining Amount: ₹${totalAmount - paiseToRupee(loans[index].amountPaid)}\n"
                                       "Loaned On: ${loans[index].loanedOn.toLocal().toString().split(' ')[0]}\n"
-                                      "Loaned Until: ${loans[index].loanedUntil.toLocal().toString().split(' ')[0]}\n"
-                                      "Status: ${loans[index].isPaid ? "Paid" : "Not Paid"}",
+                                      "Loaned Until: ${loans[index].loanedUntil.toLocal().toString().split(' ')[0]}\n",
                                     ),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
@@ -105,6 +121,89 @@ class _GivenLoansPageState extends State<GivenLoansPage> {
                                     actionsAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                var formKey =
+                                                    GlobalKey<FormState>();
+
+                                                var amountController =
+                                                    TextEditingController();
+                                                return AlertDialog(
+                                                  title:
+                                                      const Text("Add Payment"),
+                                                  content: Form(
+                                                    key: formKey,
+                                                    child: TextFormField(
+                                                      controller:
+                                                          amountController,
+                                                      keyboardType:
+                                                          TextInputType.number,
+                                                      decoration:
+                                                          const InputDecoration(
+                                                        labelText: "Amount",
+                                                      ),
+                                                      validator: (value) {
+                                                        if (value == null ||
+                                                            value.isEmpty) {
+                                                          return "Please enter amount";
+                                                        }
+                                                        return null;
+                                                      },
+                                                    ),
+                                                  ),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  actionsAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
+                                                  actions: [
+                                                    TextButton(
+                                                        onPressed: () async {
+                                                          if (formKey
+                                                              .currentState!
+                                                              .validate()) {
+                                                            await addPayment(
+                                                              loans[index]
+                                                                  .loanId!,
+                                                              loans[index]
+                                                                  .amountPaid,
+                                                              amountController
+                                                                  .text,
+                                                            );
+                                                            if (mounted) {
+                                                              Navigator.pop(
+                                                                  context);
+                                                              showSnackBar(
+                                                                  context,
+                                                                  "Loan Updated");
+                                                            }
+                                                            setState(() {});
+                                                          }
+                                                        },
+                                                        child: const Text(
+                                                          "Add Payment",
+                                                        )),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: const Text(
+                                                        "Cancel",
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              });
+                                        },
+                                        child: const Text("Add Payment"),
+                                      ),
                                       TextButton(
                                         onPressed: () async {
                                           await deleteLoan(
@@ -147,5 +246,15 @@ class _GivenLoansPageState extends State<GivenLoansPage> {
 
   Future<void> deleteLoan(String loanId) async {
     await FirebaseFirestore.instance.collection('loans').doc(loanId).delete();
+  }
+
+  Future<void> addPayment(
+      String loanId, String amountPaid, String amount) async {
+    var newAmountPaid = BigInt.parse(amountPaid) + rupeeToPaise(amount);
+
+    await FirebaseFirestore.instance
+        .collection('loans')
+        .doc(loanId)
+        .update({'amountPaid': newAmountPaid.toString()});
   }
 }
