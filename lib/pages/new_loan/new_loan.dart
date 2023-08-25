@@ -346,6 +346,7 @@ class _NewLoanPageState extends State<NewLoanPage> {
                                 loanedFromPhone: userData!.phone,
                                 amount: rupeeToPaise(amountController.text)
                                     .toString(),
+                                amountPaid: "0",
                                 loanedOn: DateTime.now(),
                                 loanedUntil: loanedUntilDate!,
                                 interestType: interestType,
@@ -354,7 +355,6 @@ class _NewLoanPageState extends State<NewLoanPage> {
                                 description: descriptionController.text,
                                 isPaid: false,
                               );
-                              print("Saving loan");
                               await FirebaseFirestore.instance
                                   .collection("loans")
                                   .add(loan.toMap());

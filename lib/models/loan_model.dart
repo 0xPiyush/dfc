@@ -9,6 +9,7 @@ class LoanModel {
   final String loanedFromName;
   final String loanedFromPhone;
   final String amount; // in Paise 1 Rupee = 100 Paise
+  final String amountPaid;
   final DateTime loanedOn;
   final DateTime loanedUntil;
   final InterestType interestType;
@@ -25,6 +26,7 @@ class LoanModel {
       required this.loanedFromName,
       required this.loanedFromPhone,
       required this.amount,
+      required this.amountPaid,
       required this.loanedOn,
       required this.loanedUntil,
       required this.interestType,
@@ -42,6 +44,7 @@ class LoanModel {
       loanedFromName: json['loanedFromName'],
       loanedFromPhone: json['loanedFromPhone'],
       amount: json['amount'],
+      amountPaid: json['amountPaid'],
       loanedOn: DateTime.parse(json['loanedOn']),
       loanedUntil: DateTime.parse(json['loanedUntil']),
       interestType: json['loanType'] == 'compound'
@@ -62,6 +65,7 @@ class LoanModel {
       'loanedFromName': loanedFromName,
       'loanedFromPhone': loanedFromPhone,
       'amount': amount,
+      'amountPaid': amountPaid,
       'loanedOn': loanedOn.toIso8601String(),
       'loanedUntil': loanedUntil.toIso8601String(),
       'loanType': interestType == InterestType.compound ? 'compound' : 'simple',

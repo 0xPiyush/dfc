@@ -68,6 +68,18 @@ class _DuePaymentsPageState extends State<DuePaymentsPage> {
                           return LoanListTile(
                             loanData: loans[index],
                             onTap: () {
+                              var totalInterest = paiseToRupee(
+                                  calculateInterest(
+                                          BigInt.parse(loans[index].amount),
+                                          loans[index].interestRate,
+                                          daysBetween(loans[index].loanedOn,
+                                              loans[index].loanedUntil),
+                                          interestType:
+                                              loans[index].interestType)
+                                      .toString());
+                              var totalAmount =
+                                  paiseToRupee(loans[index].amount) +
+                                      totalInterest;
                               showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
@@ -75,11 +87,14 @@ class _DuePaymentsPageState extends State<DuePaymentsPage> {
                                       title: Text(loans[index].loanedToName),
                                       content: Text(
                                         "Amount: ₹${paiseToRupee(loans[index].amount).toString()}\n"
+                                        "Total Amount: ₹$totalAmount\n"
                                         "Interest Rate: ${loans[index].interestRate}%\n"
                                         "Interest Type: ${loans[index].interestType == InterestType.simple ? "Simple" : "Compounding"}\n"
+                                        "Total Interest: ₹$totalInterest\n"
+                                        "Amount Paid: ₹${paiseToRupee(loans[index].amountPaid)}\n"
+                                        "Remaining Amount: ₹${totalAmount - paiseToRupee(loans[index].amountPaid)}\n"
                                         "Loaned On: ${loans[index].loanedOn.toLocal().toString().split(' ')[0]}\n"
-                                        "Loaned Until: ${loans[index].loanedUntil.toLocal().toString().split(' ')[0]}\n"
-                                        "Status: ${loans[index].isPaid ? "Paid" : "Not Paid"}",
+                                        "Loaned Until: ${loans[index].loanedUntil.toLocal().toString().split(' ')[0]}\n",
                                       ),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(10),
