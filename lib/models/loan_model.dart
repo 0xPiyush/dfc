@@ -4,6 +4,7 @@ class LoanModel {
   final String? loanId;
   final String loanedToId;
   final String loanedToName;
+  final String givenName;
   final String loanedToPhone;
   final String loanedFromId;
   final String loanedFromName;
@@ -21,6 +22,7 @@ class LoanModel {
       {this.loanId,
       required this.loanedToId,
       required this.loanedToName,
+      required this.givenName,
       required this.loanedToPhone,
       required this.loanedFromId,
       required this.loanedFromName,
@@ -39,6 +41,7 @@ class LoanModel {
       loanId: json['loanId'],
       loanedToId: json['loanedToId'],
       loanedToName: json['loanedToName'],
+      givenName: json['givenName'],
       loanedToPhone: json['loanedToPhone'],
       loanedFromId: json['loanedFromId'],
       loanedFromName: json['loanedFromName'],
@@ -60,6 +63,7 @@ class LoanModel {
     return {
       'loanedToId': loanedToId,
       'loanedToName': loanedToName,
+      'givenName': givenName,
       'loanedToPhone': loanedToPhone,
       'loanedFromId': loanedFromId,
       'loanedFromName': loanedFromName,

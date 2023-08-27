@@ -37,94 +37,86 @@ class _DuePaymentsPageState extends State<DuePaymentsPage> {
   Widget build(BuildContext context) {
     // return floating action button on bottom right
     return Scaffold(
-        body: Center(
-          child: FutureBuilder(
-            future: getDuePayments(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              }
-              final List<LoanModel> loans = snapshot.data ?? [];
-              return RefreshIndicator(
-                onRefresh: () async {
-                  setState(() {});
-                },
-                child: loans.isEmpty
-                    ? const Center(
-                        child: CustomScrollView(
-                          slivers: [
-                            SliverFillRemaining(
-                              hasScrollBody: false,
-                              child: Center(
-                                child: Text("No Due Payments."),
-                              ),
+      body: Center(
+        child: FutureBuilder(
+          future: getDuePayments(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            }
+            final List<LoanModel> loans = snapshot.data ?? [];
+            return RefreshIndicator(
+              onRefresh: () async {
+                setState(() {});
+              },
+              child: loans.isEmpty
+                  ? const Center(
+                      child: CustomScrollView(
+                        slivers: [
+                          SliverFillRemaining(
+                            hasScrollBody: false,
+                            child: Center(
+                              child: Text("No Due Payments."),
                             ),
-                          ],
-                        ),
-                      )
-                    : ListView.builder(
-                        itemCount: loans.length,
-                        itemBuilder: (context, index) {
-                          return LoanListTile(
-                            loanData: loans[index],
-                            onTap: () {
-                              var totalInterest = paiseToRupee(
-                                  calculateInterest(
-                                          BigInt.parse(loans[index].amount),
-                                          loans[index].interestRate,
-                                          daysBetween(loans[index].loanedOn,
-                                              loans[index].loanedUntil),
-                                          interestType:
-                                              loans[index].interestType)
-                                      .toString());
-                              var totalAmount =
-                                  paiseToRupee(loans[index].amount) +
-                                      totalInterest;
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: Text(loans[index].loanedToName),
-                                      content: Text(
-                                        "Amount: ₹${paiseToRupee(loans[index].amount).toString()}\n"
-                                        "Total Amount: ₹$totalAmount\n"
-                                        "Interest Rate: ${loans[index].interestRate}%\n"
-                                        "Interest Type: ${loans[index].interestType == InterestType.simple ? "Simple" : "Compounding"}\n"
-                                        "Total Interest: ₹$totalInterest\n"
-                                        "Amount Paid: ₹${paiseToRupee(loans[index].amountPaid)}\n"
-                                        "Remaining Amount: ₹${totalAmount - paiseToRupee(loans[index].amountPaid)}\n"
-                                        "Loaned On: ${loans[index].loanedOn.toLocal().toString().split(' ')[0]}\n"
-                                        "Loaned Until: ${loans[index].loanedUntil.toLocal().toString().split(' ')[0]}\n",
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      actionsAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text("Close"),
-                                        ),
-                                      ],
-                                    );
-                                  });
-                            },
-                          );
-                        },
+                          ),
+                        ],
                       ),
-              );
-            },
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.pushNamed(context, AppRoutes.newLoan.route);
+                    )
+                  : ListView.builder(
+                      itemCount: loans.length,
+                      itemBuilder: (context, index) {
+                        return LoanListTile(
+                          loanData: loans[index],
+                          onTap: () {
+                            var totalInterest = paiseToRupee(calculateInterest(
+                                    BigInt.parse(loans[index].amount),
+                                    loans[index].interestRate,
+                                    daysBetween(loans[index].loanedOn,
+                                        loans[index].loanedUntil),
+                                    interestType: loans[index].interestType)
+                                .toString());
+                            var totalAmount =
+                                paiseToRupee(loans[index].amount) +
+                                    totalInterest;
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text(loans[index].givenName),
+                                    content: Text(
+                                      "Amount: ₹${paiseToRupee(loans[index].amount).toString()}\n"
+                                      "Total Amount: ₹$totalAmount\n"
+                                      "Interest Rate: ${loans[index].interestRate}%\n"
+                                      "Interest Type: ${loans[index].interestType == InterestType.simple ? "Simple" : "Compounding"}\n"
+                                      "Total Interest: ₹$totalInterest\n"
+                                      "Amount Paid: ₹${paiseToRupee(loans[index].amountPaid)}\n"
+                                      "Remaining Amount: ₹${totalAmount - paiseToRupee(loans[index].amountPaid)}\n"
+                                      "Loaned On: ${loans[index].loanedOn.toLocal().toString().split(' ')[0]}\n"
+                                      "Loaned Until: ${loans[index].loanedUntil.toLocal().toString().split(' ')[0]}\n",
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    actionsAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text("Close"),
+                                      ),
+                                    ],
+                                  );
+                                });
+                          },
+                        );
+                      },
+                    ),
+            );
           },
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          child: const Icon(Icons.add),
-        ));
+        ),
+      ),
+    );
   }
 }

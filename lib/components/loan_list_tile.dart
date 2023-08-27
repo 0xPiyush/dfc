@@ -30,7 +30,7 @@ class LoanListTile extends StatelessWidget {
               Icon(Icons.monetization_on),
             ],
           ),
-          title: Text(loanData.loanedToName),
+          title: Text(loanData.givenName),
           subtitle: Text(
             loanData.loanedOn.toLocal().toString().split(' ')[0],
             style: Theme.of(context).textTheme.bodySmall,
