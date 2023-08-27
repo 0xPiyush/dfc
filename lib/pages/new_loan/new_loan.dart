@@ -18,13 +18,14 @@ class _NewLoanPageState extends State<NewLoanPage> {
   DateTime? loanedUntilDate = DateTime.now().add(const Duration(days: 1));
   var phoneController = TextEditingController();
   Country selectedCountry = CountryService().findByCode('IN')!;
+  var nameController = TextEditingController();
   var amountController = TextEditingController();
   var interestRateController = TextEditingController();
   var interestType = InterestType.simple;
   var descriptionController = TextEditingController();
 
   var _isLoading = false;
-  var _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +60,29 @@ class _NewLoanPageState extends State<NewLoanPage> {
                       ),
                       const Text(
                         "Loaned to:",
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: "Enter Name",
+                          hintText: "Enter Name",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        controller: nameController,
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter the Name of person loaned to.';
+                          }
+                          return null;
+                        },
+                      ),
+                      const Text(
+                        "Phone Number:",
                       ),
                       const SizedBox(
                         height: 10,
@@ -339,6 +363,7 @@ class _NewLoanPageState extends State<NewLoanPage> {
                               var loan = LoanModel(
                                 loanedToId: loanedToUser.docs[0]["uid"],
                                 loanedToName: loanedToUser.docs[0]["name"],
+                                givenName: nameController.text,
                                 loanedToPhone: loanedToUser.docs[0]["phone"],
                                 loanedFromId:
                                     FirebaseAuth.instance.currentUser!.uid,

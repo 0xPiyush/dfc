@@ -94,7 +94,7 @@ class _GivenLoansPageState extends State<GivenLoansPage> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(loans[index].loanedToName),
+                                        Text(loans[index].givenName),
                                         IconButton(
                                           onPressed: () {
                                             UrlLauncher.launchUrl(Uri.parse(
