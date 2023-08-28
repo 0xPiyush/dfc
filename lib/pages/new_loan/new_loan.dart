@@ -73,7 +73,6 @@ class _NewLoanPageState extends State<NewLoanPage> {
                           ),
                         ),
                         controller: nameController,
-                        keyboardType: TextInputType.number,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter the Name of person loaned to.';
