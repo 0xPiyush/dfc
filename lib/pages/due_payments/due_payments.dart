@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dfc/components/loan_list_tile.dart';
 import 'package:dfc/models/loan_model.dart';
 import 'package:dfc/pages/app_routes.dart';
-import 'package:dfc/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -23,8 +22,9 @@ class _DuePaymentsPageState extends State<DuePaymentsPage> {
 
     if (doc.docs.isNotEmpty) {
       var data = doc.docs.map((e) {
-        e.data()["loanId"] = e.id;
-        return LoanModel.fromMap(e.data());
+        var loanData = e.data();
+        loanData["loanId"] = e.id;
+        return LoanModel.fromMap(loanData);
       }).toList();
       data.sort((a, b) => b.loanedOn.compareTo(a.loanedOn));
       return data;
@@ -68,47 +68,43 @@ class _DuePaymentsPageState extends State<DuePaymentsPage> {
                         return LoanListTile(
                           loanData: loans[index],
                           onTap: () {
-                            var totalInterest = paiseToRupee(calculateInterest(
-                                    BigInt.parse(loans[index].amount),
-                                    loans[index].interestRate,
-                                    daysBetween(loans[index].loanedOn,
-                                        loans[index].loanedUntil),
-                                    interestType: loans[index].interestType)
-                                .toString());
-                            var totalAmount =
-                                paiseToRupee(loans[index].amount) +
-                                    totalInterest;
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text(loans[index].givenName),
-                                    content: Text(
-                                      "Amount: ₹${paiseToRupee(loans[index].amount).toString()}\n"
-                                      "Total Amount: ₹$totalAmount\n"
-                                      "Interest Rate: ${loans[index].interestRate}%\n"
-                                      "Interest Type: ${loans[index].interestType == InterestType.simple ? "Simple" : "Compounding"}\n"
-                                      "Total Interest: ₹$totalInterest\n"
-                                      "Amount Paid: ₹${paiseToRupee(loans[index].amountPaid)}\n"
-                                      "Remaining Amount: ₹${totalAmount - paiseToRupee(loans[index].amountPaid)}\n"
-                                      "Loaned On: ${loans[index].loanedOn.toLocal().toString().split(' ')[0]}\n"
-                                      "Loaned Until: ${loans[index].loanedUntil.toLocal().toString().split(' ')[0]}\n",
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    actionsAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text("Close"),
-                                      ),
-                                    ],
-                                  );
-                                });
+                            Navigator.pushNamed(
+                              context,
+                              AppRoutes.loanChat.route,
+                              arguments: {
+                                'loanData': loans[index],
+                                'showControls': false,
+                              },
+                            );
+                            // var totalAmount = paiseToRupee(loans[index].amount);
+                            // showDialog(
+                            //     context: context,
+                            //     builder: (BuildContext context) {
+                            //       return AlertDialog(
+                            //         title: Text(loans[index].givenName),
+                            //         content: Text(
+                            //           "Amount: ₹${paiseToRupee(loans[index].amount).toString()}\n"
+                            //           "Total Amount: ₹$totalAmount\n"
+                            //           "Amount Paid: ₹${paiseToRupee(loans[index].amountPaid)}\n"
+                            //           "Remaining Amount: ₹${totalAmount - paiseToRupee(loans[index].amountPaid)}\n"
+                            //           "Loaned On: ${loans[index].loanedOn.toLocal().toString().split(' ')[0]}\n"
+                            //           "Loaned Until: ${loans[index].loanedUntil.toLocal().toString().split(' ')[0]}\n",
+                            //         ),
+                            //         shape: RoundedRectangleBorder(
+                            //           borderRadius: BorderRadius.circular(10),
+                            //         ),
+                            //         actionsAlignment:
+                            //             MainAxisAlignment.spaceEvenly,
+                            //         actions: [
+                            //           TextButton(
+                            //             onPressed: () {
+                            //               Navigator.pop(context);
+                            //             },
+                            //             child: const Text("Close"),
+                            //           ),
+                            //         ],
+                            //       );
+                            //     });
                           },
                         );
                       },

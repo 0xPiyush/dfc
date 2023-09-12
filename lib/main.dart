@@ -1,6 +1,7 @@
 import 'package:dfc/pages/app_routes.dart';
 import 'package:dfc/pages/get_started/get_started.dart';
 import 'package:dfc/pages/home/home.dart';
+import 'package:dfc/pages/loan_chat/loan_chat.dart';
 import 'package:dfc/pages/new_loan/new_loan.dart';
 import 'package:dfc/pages/onboarding/onboarding.dart';
 import 'package:dfc/pages/profile/profile.dart';
@@ -90,12 +91,25 @@ class DFC extends StatelessWidget {
         horizontal: 16,
       ),
     ),
+    appBarTheme: AppBarTheme(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      shadowColor: Colors.transparent,
+      titleTextStyle: GoogleFonts.dmSerifText(
+        fontSize: 32,
+        fontWeight: FontWeight.w500,
+        height: 1.2,
+        color: Colors.black,
+      ),
+      foregroundColor: Colors.black,
+    ),
   );
 
   static var routes = {
     AppRoutes.getStarted.route: (context) => const GetStartedPage(),
     AppRoutes.home.route: (context) => const HomePage(),
     AppRoutes.newLoan.route: (context) => const NewLoanPage(),
+    AppRoutes.loanChat.route: (context) => LoanChatPage(),
     AppRoutes.profile.route: (context) => const ProfilePage(),
     AppRoutes.enterPhone.route: (context) => const EnterPhonePage(),
     AppRoutes.onboarding.route: (context) => const OnboardingPage(),

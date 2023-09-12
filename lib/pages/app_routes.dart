@@ -3,6 +3,7 @@ enum AppRoutes {
   getStarted("/get-started"),
   profile("/profile"),
   newLoan("/new-loan"),
+  loanChat("/loan-chat"),
   enterPhone("/enter-phone"),
   onboarding("/onboarding"),
   otpVerify("/otp-verify");

@@ -4,8 +4,6 @@ import 'package:dfc/models/loan_model.dart';
 import 'package:dfc/pages/app_routes.dart';
 import 'package:dfc/utils/utils.dart';
 
-import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -73,160 +71,155 @@ class _GivenLoansPageState extends State<GivenLoansPage> {
                           return LoanListTile(
                             loanData: loans[index],
                             onTap: () {
-                              var totalInterest = paiseToRupee(
-                                  calculateInterest(
-                                          BigInt.parse(loans[index].amount),
-                                          loans[index].interestRate,
-                                          daysBetween(loans[index].loanedOn,
-                                              loans[index].loanedUntil),
-                                          interestType:
-                                              loans[index].interestType)
-                                      .toString());
-                              var totalAmount =
-                                  paiseToRupee(loans[index].amount) +
-                                      totalInterest;
-
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(loans[index].givenName),
-                                        IconButton(
-                                          onPressed: () {
-                                            UrlLauncher.launchUrl(Uri.parse(
-                                                "tel:${loans[index].loanedToPhone}"));
-                                          },
-                                          icon: const Icon(Icons.call),
-                                        )
-                                      ],
-                                    ),
-                                    content: Text(
-                                      "Amount: ₹${paiseToRupee(loans[index].amount).toString()}\n"
-                                      "Total Amount: ₹$totalAmount\n"
-                                      "Interest Rate: ${loans[index].interestRate}%\n"
-                                      "Interest Type: ${loans[index].interestType == InterestType.simple ? "Simple" : "Compounding"}\n"
-                                      "Total Interest: ₹$totalInterest\n"
-                                      "Amount Paid: ₹${paiseToRupee(loans[index].amountPaid)}\n"
-                                      "Remaining Amount: ₹${totalAmount - paiseToRupee(loans[index].amountPaid)}\n"
-                                      "Loaned On: ${loans[index].loanedOn.toLocal().toString().split(' ')[0]}\n"
-                                      "Loaned Until: ${loans[index].loanedUntil.toLocal().toString().split(' ')[0]}\n",
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    actionsAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                          showDialog(
-                                              context: context,
-                                              builder: (context) {
-                                                var formKey =
-                                                    GlobalKey<FormState>();
-
-                                                var amountController =
-                                                    TextEditingController();
-                                                return AlertDialog(
-                                                  title:
-                                                      const Text("Add Payment"),
-                                                  content: Form(
-                                                    key: formKey,
-                                                    child: TextFormField(
-                                                      controller:
-                                                          amountController,
-                                                      keyboardType:
-                                                          TextInputType.number,
-                                                      decoration:
-                                                          const InputDecoration(
-                                                        labelText: "Amount",
-                                                      ),
-                                                      validator: (value) {
-                                                        if (value == null ||
-                                                            value.isEmpty) {
-                                                          return "Please enter amount";
-                                                        }
-                                                        return null;
-                                                      },
-                                                    ),
-                                                  ),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
-                                                  actionsAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceEvenly,
-                                                  actions: [
-                                                    TextButton(
-                                                        onPressed: () async {
-                                                          if (formKey
-                                                              .currentState!
-                                                              .validate()) {
-                                                            await addPayment(
-                                                              loans[index]
-                                                                  .loanId!,
-                                                              loans[index]
-                                                                  .amountPaid,
-                                                              amountController
-                                                                  .text,
-                                                            );
-                                                            if (mounted) {
-                                                              Navigator.pop(
-                                                                  context);
-                                                              showSnackBar(
-                                                                  context,
-                                                                  "Loan Updated");
-                                                            }
-                                                            setState(() {});
-                                                          }
-                                                        },
-                                                        child: const Text(
-                                                          "Add Payment",
-                                                        )),
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: const Text(
-                                                        "Cancel",
-                                                      ),
-                                                    ),
-                                                  ],
-                                                );
-                                              });
-                                        },
-                                        child: const Text("Add Payment"),
-                                      ),
-                                      TextButton(
-                                        onPressed: () async {
-                                          await deleteLoan(
-                                              loans[index].loanId!);
-                                          if (mounted) {
-                                            Navigator.pop(context);
-                                            showSnackBar(
-                                                context, "Loan Deleted");
-                                          }
-                                          setState(() {});
-                                        },
-                                        child: const Text("Delete"),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text("Cancel"),
-                                      ),
-                                    ],
-                                  );
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.loanChat.route,
+                                arguments: {
+                                  'loanData': loans[index],
+                                  'showControls': true,
                                 },
                               );
+                              // var totalAmount =
+                              //     paiseToRupee(loans[index].amount);
+
+                              //   showDialog(
+                              //     context: context,
+                              //     builder: (BuildContext context) {
+                              //       return AlertDialog(
+                              //         title: Row(
+                              //           mainAxisAlignment:
+                              //               MainAxisAlignment.spaceBetween,
+                              //           children: [
+                              //             Text(loans[index].givenName),
+                              //             IconButton(
+                              //               onPressed: () {
+                              //                 UrlLauncher.launchUrl(Uri.parse(
+                              //                     "tel:${loans[index].loanedToPhone}"));
+                              //               },
+                              //               icon: const Icon(Icons.call),
+                              //             )
+                              //           ],
+                              //         ),
+                              //         content: Text(
+                              //           "Amount: ₹${paiseToRupee(loans[index].amount).toString()}\n"
+                              //           "Total Amount: ₹$totalAmount\n"
+                              //           "Amount Paid: ₹${paiseToRupee(loans[index].amountPaid)}\n"
+                              //           "Remaining Amount: ₹${totalAmount - paiseToRupee(loans[index].amountPaid)}\n"
+                              //           "Loaned On: ${loans[index].loanedOn.toLocal().toString().split(' ')[0]}\n"
+                              //           "Loaned Until: ${loans[index].loanedUntil.toLocal().toString().split(' ')[0]}\n",
+                              //         ),
+                              //         shape: RoundedRectangleBorder(
+                              //           borderRadius: BorderRadius.circular(10),
+                              //         ),
+                              //         actionsAlignment:
+                              //             MainAxisAlignment.spaceEvenly,
+                              //         actions: [
+                              //           TextButton(
+                              //             onPressed: () {
+                              //               Navigator.pop(context);
+                              //               showDialog(
+                              //                 context: context,
+                              //                 builder: (context) {
+                              //                   var formKey =
+                              //                       GlobalKey<FormState>();
+
+                              //                   var amountController =
+                              //                       TextEditingController();
+                              //                   return AlertDialog(
+                              //                     title:
+                              //                         const Text("Add Payment"),
+                              //                     content: Form(
+                              //                       key: formKey,
+                              //                       child: TextFormField(
+                              //                         controller:
+                              //                             amountController,
+                              //                         keyboardType:
+                              //                             TextInputType.number,
+                              //                         decoration:
+                              //                             const InputDecoration(
+                              //                           labelText: "Amount",
+                              //                         ),
+                              //                         validator: (value) {
+                              //                           if (value == null ||
+                              //                               value.isEmpty) {
+                              //                             return "Please enter amount";
+                              //                           }
+                              //                           return null;
+                              //                         },
+                              //                       ),
+                              //                     ),
+                              //                     shape: RoundedRectangleBorder(
+                              //                       borderRadius:
+                              //                           BorderRadius.circular(10),
+                              //                     ),
+                              //                     actionsAlignment:
+                              //                         MainAxisAlignment
+                              //                             .spaceEvenly,
+                              //                     actions: [
+                              //                       TextButton(
+                              //                           onPressed: () async {
+                              //                             if (formKey
+                              //                                 .currentState!
+                              //                                 .validate()) {
+                              //                               await addPayment(
+                              //                                 loans[index]
+                              //                                     .loanId!,
+                              //                                 loans[index]
+                              //                                     .amountPaid,
+                              //                                 amountController
+                              //                                     .text,
+                              //                               );
+                              //                               if (mounted) {
+                              //                                 Navigator.pop(
+                              //                                     context);
+                              //                                 showSnackBar(
+                              //                                     context,
+                              //                                     "Loan Updated");
+                              //                               }
+                              //                               setState(() {});
+                              //                             }
+                              //                           },
+                              //                           child: const Text(
+                              //                             "Add Payment",
+                              //                           )),
+                              //                       TextButton(
+                              //                         onPressed: () {
+                              //                           Navigator.pop(context);
+                              //                         },
+                              //                         child: const Text(
+                              //                           "Cancel",
+                              //                         ),
+                              //                       ),
+                              //                     ],
+                              //                   );
+                              //                 },
+                              //               );
+                              //             },
+                              //             child: const Text("Add Payment"),
+                              //           ),
+                              //           TextButton(
+                              //             onPressed: () async {
+                              //               await deleteLoan(
+                              //                   loans[index].loanId!);
+                              //               if (mounted) {
+                              //                 Navigator.pop(context);
+                              //                 showSnackBar(
+                              //                     context, "Loan Deleted");
+                              //               }
+                              //               setState(() {});
+                              //             },
+                              //             child: const Text("Delete"),
+                              //           ),
+                              //           TextButton(
+                              //             onPressed: () {
+                              //               Navigator.pop(context);
+                              //             },
+                              //             child: const Text("Cancel"),
+                              //           ),
+                              //         ],
+                              //       );
+                              //     },
+                              //   );
                             },
                           );
                         },

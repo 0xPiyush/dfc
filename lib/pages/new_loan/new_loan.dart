@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_picker/country_picker.dart';
+import 'package:dfc/models/loan_chat_message_model.dart';
 import 'package:dfc/models/loan_model.dart';
 import 'package:dfc/services/auth.dart';
 import 'package:dfc/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:uuid/uuid.dart';
 
 class NewLoanPage extends StatefulWidget {
   const NewLoanPage({super.key});
@@ -21,7 +23,6 @@ class _NewLoanPageState extends State<NewLoanPage> {
   var nameController = TextEditingController();
   var amountController = TextEditingController();
   var interestRateController = TextEditingController();
-  var interestType = InterestType.simple;
   var descriptionController = TextEditingController();
 
   var _isLoading = false;
@@ -232,63 +233,6 @@ class _NewLoanPageState extends State<NewLoanPage> {
                       const SizedBox(
                         height: 16,
                       ),
-                      const Text(
-                        "Interest Rate (%):",
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          labelText: "Interest Rate (%)",
-                          hintText: "Interest Rate (%)",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        controller: interestRateController,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(2)
-                        ],
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter the interest rate';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      Text(
-                        "Interest Type:",
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      RadioListTile(
-                        title: const Text("Simple Interest"),
-                        value: InterestType.simple,
-                        groupValue: interestType,
-                        onChanged: (value) {
-                          setState(() {
-                            interestType = value!;
-                          });
-                        },
-                      ),
-                      RadioListTile(
-                        title: const Text("Compound Interest"),
-                        value: InterestType.compound,
-                        groupValue: interestType,
-                        onChanged: (value) {
-                          setState(() {
-                            interestType = value!;
-                          });
-                        },
-                      ),
                       const SizedBox(
                         height: 16,
                       ),
@@ -373,11 +317,20 @@ class _NewLoanPageState extends State<NewLoanPage> {
                                 amountPaid: "0",
                                 loanedOn: DateTime.now(),
                                 loanedUntil: loanedUntilDate!,
-                                interestType: interestType,
-                                interestRate:
-                                    double.parse(interestRateController.text),
                                 description: descriptionController.text,
                                 isPaid: false,
+                                messages: [
+                                  LoanChatMessageModel(
+                                      id: const Uuid().v4(),
+                                      amountDepositedInPaise:
+                                          rupeeToPaise(amountController.text)
+                                              .toString(),
+                                      amountRemainingInPaise:
+                                          rupeeToPaise(amountController.text)
+                                              .toString(),
+                                      timestamp: Timestamp.now(),
+                                      transactionType: TransactionType.sent),
+                                ],
                               );
                               await FirebaseFirestore.instance
                                   .collection("loans")
