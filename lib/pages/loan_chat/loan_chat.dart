@@ -106,7 +106,7 @@ class _LoanChatPageState extends State<LoanChatPage> {
                   ? receiver
                   : sender,
               text: paiseToRupee(message.amountDepositedInPaise).toString(),
-              id: "message.messageId",
+              id: message.id,
               type: types.MessageType.text,
               createdAt: message.timestamp.millisecondsSinceEpoch,
               metadata: message.toJson(),
