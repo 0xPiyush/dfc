@@ -10,13 +10,7 @@ class LoanListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var totalInterest = paiseToRupee(calculateInterest(
-            BigInt.parse(loanData.amount),
-            loanData.interestRate,
-            daysBetween(loanData.loanedOn, loanData.loanedUntil),
-            interestType: loanData.interestType)
-        .toString());
-    var totalAmount = paiseToRupee(loanData.amount) + totalInterest;
+    var totalAmount = paiseToRupee(loanData.amount);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       child: Material(
@@ -50,11 +44,6 @@ class LoanListTile extends StatelessWidget {
                     TextSpan(
                       text: paiseToRupee(loanData.amount).toString(),
                       style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    TextSpan(
-                      text:
-                          " @${loanData.interestRate}% ${loanData.interestType == InterestType.compound ? 'CI' : 'SI'}",
-                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),

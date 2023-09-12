@@ -1,4 +1,4 @@
-enum InterestType { compound, simple }
+import 'package:dfc/models/loan_chat_message_model.dart';
 
 class LoanModel {
   final String? loanId;
@@ -13,30 +13,32 @@ class LoanModel {
   final String amountPaid;
   final DateTime loanedOn;
   final DateTime loanedUntil;
-  final InterestType interestType;
-  final double interestRate;
   final String description;
   final bool isPaid;
+  final List<LoanChatMessageModel>? messages;
 
-  LoanModel(
-      {this.loanId,
-      required this.loanedToId,
-      required this.loanedToName,
-      required this.givenName,
-      required this.loanedToPhone,
-      required this.loanedFromId,
-      required this.loanedFromName,
-      required this.loanedFromPhone,
-      required this.amount,
-      required this.amountPaid,
-      required this.loanedOn,
-      required this.loanedUntil,
-      required this.interestType,
-      required this.interestRate,
-      required this.description,
-      required this.isPaid});
+  LoanModel({
+    this.loanId,
+    required this.loanedToId,
+    required this.loanedToName,
+    required this.givenName,
+    required this.loanedToPhone,
+    required this.loanedFromId,
+    required this.loanedFromName,
+    required this.loanedFromPhone,
+    required this.amount,
+    required this.amountPaid,
+    required this.loanedOn,
+    required this.loanedUntil,
+    required this.description,
+    required this.isPaid,
+    this.messages,
+  });
 
   factory LoanModel.fromMap(Map<String, dynamic> json) {
+    var messages = (json['messages'] as List<dynamic>)
+        .map((message) => LoanChatMessageModel.fromJson(message))
+        .toList();
     return LoanModel(
       loanId: json['loanId'],
       loanedToId: json['loanedToId'],
@@ -50,16 +52,14 @@ class LoanModel {
       amountPaid: json['amountPaid'],
       loanedOn: DateTime.parse(json['loanedOn']),
       loanedUntil: DateTime.parse(json['loanedUntil']),
-      interestType: json['loanType'] == 'compound'
-          ? InterestType.compound
-          : InterestType.simple,
-      interestRate: json['interestRate'],
       description: json['description'],
       isPaid: json['isPaid'],
+      messages: messages,
     );
   }
 
   Map<String, dynamic> toMap() {
+    var m = messages?.map((message) => message.toJson()).toList();
     return {
       'loanedToId': loanedToId,
       'loanedToName': loanedToName,
@@ -72,10 +72,9 @@ class LoanModel {
       'amountPaid': amountPaid,
       'loanedOn': loanedOn.toIso8601String(),
       'loanedUntil': loanedUntil.toIso8601String(),
-      'loanType': interestType == InterestType.compound ? 'compound' : 'simple',
-      'interestRate': interestRate,
       'description': description,
       'isPaid': isPaid,
+      'messages': m,
     };
   }
 }
